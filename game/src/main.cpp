@@ -82,6 +82,14 @@ int main()
 
         DrawRectangle(10, 10, 500, 120, Fade(BLACK, 0.06f));
         DrawRectangleLines(10, 10, 500, 120, Fade(BLACK, 0.2f));
+        char buf[256];
+        std::snprintf(buf, sizeof(buf),
+            "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)",
+            start.x, start.y, launchAngleDeg, launchSpeed, vx, vy);
+        DrawText(buf, 18, 18, 18, BLACK);
+
+        DrawText("Move: A/D/W/S   | Arrow Left/Right:angle | Arrow Up/Down:speed ",
+            18, 135, 18, DARKGRAY);
 
         EndDrawing();
     }
