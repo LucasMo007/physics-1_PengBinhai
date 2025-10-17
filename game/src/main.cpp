@@ -3,13 +3,25 @@
 #include <cmath>
 #include <algorithm> 
 #include <cstdio>
+#include <vector>  
+//1.	Develop a framework using multiple Physics Body objects, which contain data for:a.position b.velocity c.drag d.	mass 
 
 struct PhysicsBody {
     Vector2 position = Vector2Zeros;
     Vector2 velocity = Vector2Zeros;
-    float   drag = 0.0f;
+    float   drag = 1.0f;
     float   mass = 1.0f;
     bool    active = true;
+};
+
+class PhysicsWorld {
+public:
+    float   time = 0.0f;
+    Vector2 gravity{ 0.0f, 600.0f };
+    void Add(PhysicsBody* b);
+    void Step(float dt);
+private:
+    std::vector<PhysicsBody*> bodies;
 };
 int main()
 {
