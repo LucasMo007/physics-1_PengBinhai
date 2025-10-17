@@ -3,6 +3,14 @@
 #include <cmath>
 #include <algorithm> 
 #include <cstdio>
+
+struct PhysicsBody {
+    Vector2 position = Vector2Zeros;
+    Vector2 velocity = Vector2Zeros;
+    float   drag = 0.0f;
+    float   mass = 1.0f;
+    bool    active = true;
+};
 int main()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
