@@ -13,7 +13,7 @@ struct PhysicsBody {
     float   mass = 1.0f;
     bool    active = true;
 };
-
+//a Physics Simulation class 
 class PhysicsWorld {
 public:
     float   time = 0.0f;
@@ -23,6 +23,21 @@ public:
 private:
     std::vector<PhysicsBody*> bodies;
 };
+void PhysicsWorld::Add(PhysicsBody* b) {
+    bodies.push_back(b);
+}
+
+void PhysicsWorld::Step(float dt) {
+    time += dt;
+    for (auto* b : bodies) {
+        if (!b || !b->active) continue;
+
+        b->velocity.x += gravity.x * dt;
+        b->velocity.y += gravity.y * dt;
+        b->position.x += b->velocity.x * dt;
+        b->position.y += b->velocity.y * dt;
+    }
+}
 int main()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
