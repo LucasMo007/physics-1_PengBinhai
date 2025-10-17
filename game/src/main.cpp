@@ -13,6 +13,19 @@ struct PhysicsBody {
     float   mass = 1.0f;
     bool    active = true;
 };
+struct Trail {
+    std::vector<Vector2> points;
+    void Clear() { points.clear(); }
+    void Add(Vector2 p) {
+        if (points.empty() || Vector2Distance(points.back(), p) > 2.0f)
+            points.push_back(p);
+    }
+    void Draw(Color c) const {
+        for (size_t i = 1; i < points.size(); ++i) {
+            DrawLineEx(points[i - 1], points[i], 2.0f, c);
+        }
+    }
+};
 //a Physics Simulation class 
 class PhysicsWorld {
 public:
@@ -71,9 +84,44 @@ int main()
     //one object of PhysicsWorld 
     PhysicsWorld sim;
 
+    PhysicsBody bird;
+    bird.position = launchPosition;
+    bird.velocity = { 0,0 };
+    bird.active = false;
+    sim.Add(&bird);
+
+    Trail trail;
+
+    auto Launch = [&]() 
+        {
+        bird.active = true;
+        bird.position = launchPosition;
+
+        float rad = launchAngleDeg * DEG2RAD;
+        bird.velocity.x = launchSpeed * cosf(rad);
+        bird.velocity.y = -launchSpeed * sinf(rad);
+        trail.Clear();
+        trail.Add(bird.position);
+        };
+
+    auto SetAnglePreset = [&](int key) 
+        {
+        if (key == KEY_ONE)   launchAngleDeg = 0.0f;
+        if (key == KEY_TWO)   launchAngleDeg = 45.0f;
+        if (key == KEY_THREE) launchAngleDeg = 60.0f;
+        if (key == KEY_FOUR)  launchAngleDeg = 90.0f;
+        };
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();//获取帧时间增量：获取上一帧到当前帧的时间间隔（秒），用于实现与帧率无关的平滑移动
+
+        if (IsKeyPressed(KEY_SPACE)) Launch();
+
+
+        if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) ||
+            IsKeyPressed(KEY_THREE) || IsKeyPressed(KEY_FOUR)) {
+            SetAnglePreset(GetKeyPressed());
+        }
 
         bool  fast = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
         float angleStep = (fast ? 90.0f : 45.0f) * dt;
@@ -96,6 +144,7 @@ int main()
         if (IsKeyDown(KEY_L)) gravityAngleDeg += gAngStep;
         if (IsKeyDown(KEY_I)) gravityMag += gMagStep;
         if (IsKeyDown(KEY_K)) gravityMag = std::max(0.0f, gravityMag - gMagStep);
+
         float gRad = gravityAngleDeg * DEG2RAD;
         sim.gravity.x = gravityMag * cosf(gRad);
         sim.gravity.y = gravityMag * sinf(gRad);
@@ -118,6 +167,17 @@ int main()
             start.x + dir.x * (launchSpeed * lengthPerSpeed),
             start.y - dir.y * (launchSpeed * lengthPerSpeed)
         };
+
+        if (bird.active) {
+            sim.Step(dt);
+            trail.Add(bird.position);
+
+            if (bird.position.y > ground.y - radius ||
+                bird.position.x > GetScreenWidth() + 50 ||
+                bird.position.x < -50) {
+                bird.active = false;
+            }
+        }
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -127,11 +187,15 @@ int main()
 
         DrawRectangleRec(ground, DARKGRAY);
 
+        trail.Draw(ORANGE);
 
-        DrawCircleV(launchPosition, radius, RED);
+        DrawCircleV(bird.position , radius, RED);
 
         DrawCircleV(start, 6.0f, MAROON);
         DrawLineEx(start, end, 3.0f, RED);
+
+        
+
 
         DrawRectangle(10, 10, 500, 120, Fade(BLACK, 0.06f));
         DrawRectangleLines(10, 10, 500, 120, Fade(BLACK, 0.2f));
