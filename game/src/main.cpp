@@ -64,6 +64,13 @@ int main()
     float   launchAngleDeg = 45.0f;
     float   launchSpeed = 300.0f;
     float   lengthPerSpeed = 0.5f;
+
+    //gavvity adjust avriable 
+    float gravityAngleDeg = 90.0f;
+    float gravityMag = 600.0f;
+    //one object of PhysicsWorld 
+    PhysicsWorld sim;
+
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();//获取帧时间增量：获取上一帧到当前帧的时间间隔（秒），用于实现与帧率无关的平滑移动
@@ -82,6 +89,17 @@ int main()
         if (IsKeyDown(KEY_D)) launchPosition.x += posStep;
         if (IsKeyDown(KEY_W)) launchPosition.y -= posStep;
         if (IsKeyDown(KEY_S)) launchPosition.y += posStep;
+        //4.Ensure the direction and magnitude of gravity can be adjusted. 
+        float gAngStep = 120.0f * dt;
+        float gMagStep = 600.0f * dt;
+        if (IsKeyDown(KEY_J)) gravityAngleDeg -= gAngStep;
+        if (IsKeyDown(KEY_L)) gravityAngleDeg += gAngStep;
+        if (IsKeyDown(KEY_I)) gravityMag += gMagStep;
+        if (IsKeyDown(KEY_K)) gravityMag = std::max(0.0f, gravityMag - gMagStep);
+        float gRad = gravityAngleDeg * DEG2RAD;
+        sim.gravity.x = gravityMag * cosf(gRad);
+        sim.gravity.y = gravityMag * sinf(gRad);
+
 
         launchAngleDeg = Clamp(launchAngleDeg, -89.0f, 89.0f);
 
