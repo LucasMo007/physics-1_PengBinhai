@@ -218,8 +218,8 @@ int main()
 
         Vector2 start = launchPosition;
         Vector2 end{
-            start.x + dir.x * (launchSpeed * lengthPerSpeed),
-            start.y - dir.y * (launchSpeed * lengthPerSpeed)
+            start.x + dir.x * (launchSpeed * lengthPerSpeed * 0.35f),
+            start.y - dir.y * (launchSpeed * lengthPerSpeed * 0.35f)
         };
 
         if (bird.active) 
