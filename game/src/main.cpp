@@ -194,19 +194,30 @@ int main()
         DrawCircleV(start, 6.0f, MAROON);
         DrawLineEx(start, end, 3.0f, RED);
 
-        
+
+        {
+            Vector2 gStart{ 100, 120 };
+            Vector2 gEnd = Vector2Add(gStart, Vector2Scale(sim.gravity, 0.08f));
+            DrawLineEx(gStart, gEnd, 4.0f, BLUE);
+            DrawCircleV(gStart, 5.0f, DARKBLUE);
+            DrawText("Gravity", (int)gStart.x - 50, (int)gStart.y - 18, 16, DARKBLUE);
+        }
 
 
         DrawRectangle(10, 10, 500, 120, Fade(BLACK, 0.06f));
         DrawRectangleLines(10, 10, 500, 120, Fade(BLACK, 0.2f));
-        char buf[256];
+        char buf[512];
         std::snprintf(buf, sizeof(buf),
-            "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)",
-            start.x, start.y, launchAngleDeg, launchSpeed, vx, vy);
-        DrawText(buf, 18, 18, 18, BLACK);
+            "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)\nGravity: mag=%.1f  ang=%.1f deg (0=right, 90=down)\nTime: %.2f s   Active: %s",
+            start.x, start.y, launchAngleDeg, launchSpeed, vx, vy,gravityMag, gravityAngleDeg, sim.time, bird.active ? "yes" : "no");
+        
+
+        DrawText(buf, 22, 18, 18, BLACK);
 
         DrawText("Move: A/D/W/S   | Arrow Left/Right:angle | Arrow Up/Down:speed ",
-            18, 135, 18, DARKGRAY);
+            18, 170, 18, DARKGRAY);
+        DrawText("SPACE=Launch | 1/2/3/4 => 0/45/60/90 deg", 16, 190, 18, DARKGRAY);
+        DrawText("J/L=gravity dir  I/K=gravity mag", 16, 212, 18, DARKGRAY);
 
         EndDrawing();
     }
