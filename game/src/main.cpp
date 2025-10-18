@@ -7,7 +7,8 @@
 //1.	Develop a framework using multiple Physics Body objects, which contain data for:a.position b.velocity c.drag d.	mass 
 enum class ShapeType { None, Sphere };
 
-struct PhysicsBody {
+struct PhysicsBody 
+{
     Vector2 position = Vector2Zeros;
     Vector2 velocity = Vector2Zeros;
     float   drag = 1.0f;
@@ -22,7 +23,8 @@ struct PhysicsBody {
     Color baseColor = DARKGRAY;    // draw base; turn RED if overlapping
 };
 
-struct Trail {
+struct Trail 
+{
     std::vector<Vector2> points;
     void Clear() { points.clear(); }
     void Add(Vector2 p) {
@@ -47,11 +49,13 @@ private:
     std::vector<PhysicsBody*> bodies;
     void CollideAll();  // NEW: pairwise collision checks (sphere-sphere)
 };
-void PhysicsWorld::Add(PhysicsBody* b) {
+void PhysicsWorld::Add(PhysicsBody* b)
+{
     bodies.push_back(b);
 }
 
-void PhysicsWorld::Step(float dt) {
+void PhysicsWorld::Step(float dt) 
+{
     time += dt;
     for (auto* b : bodies) {
         if (!b || !b->active) continue;
@@ -61,6 +65,7 @@ void PhysicsWorld::Step(float dt) {
         b->position.x += b->velocity.x * dt;
         b->position.y += b->velocity.y * dt;
     }
+    CollideAll();
 }
 void PhysicsWorld::CollideAll() {
     // reset flags
@@ -226,6 +231,8 @@ int main()
                 bird.position.x < -50) {
                 bird.active = false;
             }
+            else {
+                sim.Step(0.0f);
         }
         BeginDrawing();
         ClearBackground(RAYWHITE);
