@@ -122,7 +122,7 @@ int main()
 
     //gavvity adjust avriable 
     float gravityAngleDeg = 90.0f;
-    float gravityMag = 600.0f;
+    float gravityMag = 700.0f;
     //one object of PhysicsWorld 
     PhysicsWorld sim;
 
@@ -136,7 +136,7 @@ int main()
     sim.Add(&bird);
 
     PhysicsBody target;
-    target.position = { 700.0f, 520.0f }; // adjust as you like
+    target.position = { 500.0f, 520.0f }; // adjust as you like
     target.velocity = { 0,0 };
     target.active = false;              // static (not integrated)
     target.shape = ShapeType::Sphere;
@@ -146,24 +146,24 @@ int main()
 
     Trail trail;
 
-    auto Launch = [&]() 
+    auto Launch = [&]()
         {
-        bird.active = true;
-        bird.position = launchPosition;
+            bird.active = true;
+            bird.position = launchPosition;
 
-        float rad = launchAngleDeg * DEG2RAD;
-        bird.velocity.x = launchSpeed * cosf(rad);
-        bird.velocity.y = -launchSpeed * sinf(rad);
-        trail.Clear();
-        trail.Add(bird.position);
+            float rad = launchAngleDeg * DEG2RAD;
+            bird.velocity.x = launchSpeed * cosf(rad);
+            bird.velocity.y = -launchSpeed * sinf(rad);
+            trail.Clear();
+            trail.Add(bird.position);
         };
 
-    auto SetAnglePreset = [&](int key) 
+    auto SetAnglePreset = [&](int key)
         {
-        if (key == KEY_ONE)   launchAngleDeg = 0.0f;
-        if (key == KEY_TWO)   launchAngleDeg = 45.0f;
-        if (key == KEY_THREE) launchAngleDeg = 60.0f;
-        if (key == KEY_FOUR)  launchAngleDeg = 90.0f;
+            if (key == KEY_ONE)   launchAngleDeg = 0.0f;
+            if (key == KEY_TWO)   launchAngleDeg = 45.0f;
+            if (key == KEY_THREE) launchAngleDeg = 60.0f;
+            if (key == KEY_FOUR)  launchAngleDeg = 90.0f;
         };
     while (!WindowShouldClose())
     {
@@ -222,63 +222,68 @@ int main()
             start.y - dir.y * (launchSpeed * lengthPerSpeed)
         };
 
-        if (bird.active) {
+        if (bird.active) 
+        {
             sim.Step(dt);
             trail.Add(bird.position);
 
             if (bird.position.y > ground.y - radius ||
                 bird.position.x > GetScreenWidth() + 50 ||
-                bird.position.x < -50) {
+                bird.position.x < -50)
+            {
                 bird.active = false;
             }
-            else {
+            else 
+            {
                 sim.Step(0.0f);
+            }
         }
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
+            BeginDrawing();
+            ClearBackground(RAYWHITE);
 
 
-        DrawRectangleRec(platform, GRAY);
+            DrawRectangleRec(platform, GRAY);
 
 
-        DrawRectangleRec(ground, DARKGRAY);
+            DrawRectangleRec(ground, DARKGRAY);
 
-        trail.Draw(ORANGE);
+            trail.Draw(ORANGE);
 
-        DrawCircleV(bird.position, bird.radius, bird.isOverlapping ? RED : bird.baseColor);
-        DrawCircleV(target.position, target.radius, target.isOverlapping ? RED : target.baseColor);
+            DrawCircleV(bird.position, bird.radius, bird.isOverlapping ? RED : bird.baseColor);
+            DrawCircleV(target.position, target.radius, target.isOverlapping ? RED : target.baseColor);
 
-        DrawCircleV(start, 6.0f, MAROON);
-        DrawLineEx(start, end, 3.0f, RED);
+            DrawCircleV(start, 6.0f, MAROON);
+            DrawLineEx(start, end, 3.0f, RED);
 
 
-        {
-            Vector2 gStart{ 350, 40 };
-            Vector2 gEnd = Vector2Add(gStart, Vector2Scale(sim.gravity, 0.08f));
-            DrawLineEx(gStart, gEnd, 4.0f, BLUE);
-            DrawCircleV(gStart, 5.0f, DARKBLUE);
-            DrawText("Gravity", (int)gStart.x - 50, (int)gStart.y - 18, 16, DARKBLUE);
+            {
+                Vector2 gStart{ 350, 40 };
+                Vector2 gEnd = Vector2Add(gStart, Vector2Scale(sim.gravity, 0.08f));
+                DrawLineEx(gStart, gEnd, 4.0f, BLUE);
+                DrawCircleV(gStart, 5.0f, DARKBLUE);
+                DrawText("Gravity", (int)gStart.x - 50, (int)gStart.y - 18, 16, DARKBLUE);
+            }
+
+
+            DrawRectangle(10, 10, 500, 150, Fade(BLACK, 0.06f));
+            DrawRectangleLines(10, 10, 500, 150, Fade(BLACK, 0.2f));
+            char buf[512];
+            std::snprintf(buf, sizeof(buf),
+                "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)\nGravity: mag=%.1f  ang=%.1f deg (0=right, 90=down)\nTime: %.2f s   Active: %s",
+                start.x, start.y, launchAngleDeg, launchSpeed, vx, vy, gravityMag, gravityAngleDeg, sim.time, bird.active ? "yes" : "no");
+
+
+            DrawText(buf, 22, 18, 18, BLACK);
+
+            DrawText("Move: A/D/W/S   | Arrow Left/Right:angle | Arrow Up/Down:speed ",
+                18, 170, 18, DARKGRAY);
+            DrawText("SPACE=Launch | 1/2/3/4 => 0/45/60/90 deg", 16, 190, 18, DARKGRAY);
+            DrawText("J/L=gravity dir  I/K=gravity mag", 16, 212, 18, DARKGRAY);
+
+            EndDrawing();
         }
 
-
-        DrawRectangle(10, 10, 500, 150, Fade(BLACK, 0.06f));
-        DrawRectangleLines(10, 10, 500, 150, Fade(BLACK, 0.2f));
-        char buf[512];
-        std::snprintf(buf, sizeof(buf),
-            "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)\nGravity: mag=%.1f  ang=%.1f deg (0=right, 90=down)\nTime: %.2f s   Active: %s",
-            start.x, start.y, launchAngleDeg, launchSpeed, vx, vy,gravityMag, gravityAngleDeg, sim.time, bird.active ? "yes" : "no");
-        
-
-        DrawText(buf, 22, 18, 18, BLACK);
-
-        DrawText("Move: A/D/W/S   | Arrow Left/Right:angle | Arrow Up/Down:speed ",
-            18, 170, 18, DARKGRAY);
-        DrawText("SPACE=Launch | 1/2/3/4 => 0/45/60/90 deg", 16, 190, 18, DARKGRAY);
-        DrawText("J/L=gravity dir  I/K=gravity mag", 16, 212, 18, DARKGRAY);
-
-        EndDrawing();
+        CloseWindow();
+        return 0;
     }
 
-    CloseWindow();
-    return 0;
-}
