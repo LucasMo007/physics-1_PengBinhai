@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <vector>  
 //1.	Develop a framework using multiple Physics Body objects, which contain data for:a.position b.velocity c.drag d.	mass 
+enum class ShapeType { None, Sphere };
 
 struct PhysicsBody {
     Vector2 position = Vector2Zeros;
@@ -12,6 +13,14 @@ struct PhysicsBody {
     float   drag = 1.0f;
     float   mass = 1.0f;
     bool    active = true;
+    // --- Collision shape ---
+    ShapeType shape = ShapeType::None;
+    float radius = 0.0f;     // used when shape == Sphere
+
+    // --- Debug/visual ---
+    bool  isOverlapping = false;   // set by collision system
+    Color baseColor = DARKGRAY;    // draw base; turn RED if overlapping
+};
 };
 struct Trail {
     std::vector<Vector2> points;
@@ -35,6 +44,8 @@ public:
     void Step(float dt);
 private:
     std::vector<PhysicsBody*> bodies;
+    void CollideAll();  // NEW: pairwise collision checks (sphere-sphere)
+};
 };
 void PhysicsWorld::Add(PhysicsBody* b) {
     bodies.push_back(b);
