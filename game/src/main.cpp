@@ -21,7 +21,7 @@ struct PhysicsBody {
     bool  isOverlapping = false;   // set by collision system
     Color baseColor = DARKGRAY;    // draw base; turn RED if overlapping
 };
-};
+
 struct Trail {
     std::vector<Vector2> points;
     void Clear() { points.clear(); }
@@ -36,7 +36,8 @@ struct Trail {
     }
 };
 //a Physics Simulation class 
-class PhysicsWorld {
+class PhysicsWorld 
+{
 public:
     float   time = 0.0f;
     Vector2 gravity{ 0.0f, 600.0f };
@@ -45,7 +46,6 @@ public:
 private:
     std::vector<PhysicsBody*> bodies;
     void CollideAll();  // NEW: pairwise collision checks (sphere-sphere)
-};
 };
 void PhysicsWorld::Add(PhysicsBody* b) {
     bodies.push_back(b);
@@ -60,6 +60,32 @@ void PhysicsWorld::Step(float dt) {
         b->velocity.y += gravity.y * dt;
         b->position.x += b->velocity.x * dt;
         b->position.y += b->velocity.y * dt;
+    }
+}
+void PhysicsWorld::CollideAll() {
+    // reset flags
+    for (auto* b : bodies) if (b) b->isOverlapping = false;
+
+    // pairwise checks
+    const int n = (int)bodies.size();
+    for (int i = 0; i < n; ++i) {
+        PhysicsBody* a = bodies[i];
+        if (!a) continue;
+
+        for (int j = i + 1; j < n; ++j) {
+            PhysicsBody* c = bodies[j];
+            if (!c) continue;
+
+            // Sphere-Sphere only
+            if (a->shape == ShapeType::Sphere && c->shape == ShapeType::Sphere) {
+                float sumR = a->radius + c->radius;
+                float dist = Vector2Distance(a->position, c->position);
+                if (dist < sumR) {
+                    a->isOverlapping = true;
+                    c->isOverlapping = true;
+                }
+            }
+        }
     }
 }
 int main()
@@ -99,7 +125,19 @@ int main()
     bird.position = launchPosition;
     bird.velocity = { 0,0 };
     bird.active = false;
+    bird.shape = ShapeType::Sphere;
+    bird.radius = 10.0f;
+    bird.baseColor = ORANGE;
     sim.Add(&bird);
+
+    PhysicsBody target;
+    target.position = { 700.0f, 520.0f }; // adjust as you like
+    target.velocity = { 0,0 };
+    target.active = false;              // static (not integrated)
+    target.shape = ShapeType::Sphere;
+    target.radius = 24.0f;
+    target.baseColor = DARKBLUE;           // will turn RED on overlap
+    sim.Add(&target);
 
     Trail trail;
 
@@ -200,7 +238,8 @@ int main()
 
         trail.Draw(ORANGE);
 
-        DrawCircleV(bird.position , radius, RED);
+        DrawCircleV(bird.position, bird.radius, bird.isOverlapping ? RED : bird.baseColor);
+        DrawCircleV(target.position, target.radius, target.isOverlapping ? RED : target.baseColor);
 
         DrawCircleV(start, 6.0f, MAROON);
         DrawLineEx(start, end, 3.0f, RED);
