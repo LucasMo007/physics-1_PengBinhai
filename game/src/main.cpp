@@ -196,7 +196,7 @@ int main()
 
 
         {
-            Vector2 gStart{ 100, 120 };
+            Vector2 gStart{ 350, 40 };
             Vector2 gEnd = Vector2Add(gStart, Vector2Scale(sim.gravity, 0.08f));
             DrawLineEx(gStart, gEnd, 4.0f, BLUE);
             DrawCircleV(gStart, 5.0f, DARKBLUE);
@@ -204,8 +204,8 @@ int main()
         }
 
 
-        DrawRectangle(10, 10, 500, 120, Fade(BLACK, 0.06f));
-        DrawRectangleLines(10, 10, 500, 120, Fade(BLACK, 0.2f));
+        DrawRectangle(10, 10, 500, 150, Fade(BLACK, 0.06f));
+        DrawRectangleLines(10, 10, 500, 150, Fade(BLACK, 0.2f));
         char buf[512];
         std::snprintf(buf, sizeof(buf),
             "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)\nGravity: mag=%.1f  ang=%.1f deg (0=right, 90=down)\nTime: %.2f s   Active: %s",
