@@ -298,6 +298,8 @@ int main()
             DrawCircleV(start, 6.0f, MAROON);
             DrawLineEx(start, end, 3.0f, RED);
 
+            DrawLineEx({ 0, greenLineY }, { (float)GetScreenWidth(), greenLineY }, 5.0f, GREEN);
+
 
             {
                 Vector2 gStart{ 350, 40 };
