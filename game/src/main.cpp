@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <vector>  
 //1.	Develop a framework using multiple Physics Body objects, which contain data for:a.position b.velocity c.drag d.	mass 
-enum class ShapeType { None, Sphere };
+enum class ShapeType { None, Sphere, Halfspace};
 
 struct PhysicsBody 
 {
@@ -21,6 +21,17 @@ struct PhysicsBody
     // --- Debug/visual ---
     bool  isOverlapping = false;   // set by collision system
     Color baseColor = DARKGRAY;    // draw base; turn RED if overlapping
+
+    Vector2 normal{ 0, -1 };  // bird get into halfspace inside ,it happen collision。
+
+                             /* 地面以下 是halfspace（inside），
+                                normal(0, −1) means up part of line is  halfspace outside，
+                               */
+    /*在游戏设计中，法向量(normal) 指向半空间的外部。
+
+        要发生碰撞，物体必须进入半空间内部（即法线的反方向那一侧）。*/
+    float   offset = 0.0f;
+
 };
 
 struct Trail 
@@ -89,6 +100,32 @@ void PhysicsWorld::CollideAll() {
                     a->isOverlapping = true;
                     c->isOverlapping = true;
                 }
+            }
+        }
+    }
+    // --- B) 球-半空间（半空间为 n·x >= offset 的一侧）---
+    for (int i = 0; i < n; ++i) {
+        PhysicsBody* s = bodies[i];
+        if (!s || s->shape != ShapeType::Sphere) continue;
+
+        for (int j = 0; j < n; ++j) {
+            if (i == j) continue;
+            PhysicsBody* h = bodies[j];
+            if (!h || h->shape != ShapeType::Halfspace) continue;
+
+            Vector2 nrm = h->normal;
+            float len = Vector2Length(nrm);
+            if (len <= 0.0f) continue;                 // 避免无效法线
+            nrm = Vector2Scale(nrm, 1.0f / len);       // 归一化
+
+            // 有符号距离：d = n·c - offset
+            float d = Vector2DotProduct(nrm, s->position) - h->offset;
+
+           
+            if (d <= s->radius) 
+            {
+                s->isOverlapping = true;
+                h->isOverlapping = true;
             }
         }
     }
