@@ -136,11 +136,17 @@ int main()
     InitWindow(800, 800, "Angry Bird: Rendering Launch Vector");
     SetTargetFPS(60);
 
+
+
     Rectangle platform;
     platform.x = 0.0f;
     platform.y = 600.0f;
     platform.width = 100.0f;
     platform.height = 20.0f;
+
+    const float gapBelowPlatform = 36.0f;
+    float greenLineY = platform.y + platform.height + gapBelowPlatform;
+
 
     Rectangle ground;
     ground.x = 0.0f;
