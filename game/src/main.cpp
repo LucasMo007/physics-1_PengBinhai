@@ -310,9 +310,10 @@ int main()
             DrawRectangle(0, (int)greenLineY, GetScreenWidth(),
                 GetScreenHeight() - (int)greenLineY, areaFill);
 
-            DrawLineEx({ 0, greenLineY }, { (float)GetScreenWidth(), greenLineY }, 5.0f, GREEN);
+           /* DrawLineEx({ 0, greenLineY }, { (float)GetScreenWidth(), greenLineY }, 5.0f, GREEN);*/
 
-
+            Color greenLineColor = hitGreenOrBelow ? RED : GREEN;
+            DrawLineEx({ 0, greenLineY }, { (float)GetScreenWidth(), greenLineY }, 5.0f, greenLineColor);
             {
                 Vector2 gStart{ 350, 40 };
                 Vector2 gEnd = Vector2Add(gStart, Vector2Scale(sim.gravity, 0.08f));
