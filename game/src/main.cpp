@@ -281,6 +281,10 @@ int main()
                 sim.Step(0.0f);
             }
         }
+
+        bool hitGreenOrBelow = (bird.position.y + bird.radius >= greenLineY);
+        float rr = bird.radius + target.radius;
+        bool hitTarget = (Vector2Distance(bird.position, target.position) < rr);
             BeginDrawing();
             ClearBackground(RAYWHITE);
 
@@ -292,11 +296,17 @@ int main()
 
             trail.Draw(ORANGE);
 
-            DrawCircleV(bird.position, bird.radius, bird.isOverlapping ? RED : bird.baseColor);
+
+            Color birdColor = hitTarget ? PURPLE : (hitGreenOrBelow ? RED : bird.baseColor);
+            DrawCircleV(bird.position, bird.radius, birdColor);
             DrawCircleV(target.position, target.radius, target.isOverlapping ? RED : target.baseColor);
 
             DrawCircleV(start, 6.0f, MAROON);
             DrawLineEx(start, end, 3.0f, RED);
+
+            Color areaFill = hitGreenOrBelow ? Color{ 255, 0, 0, 110 } : Color{ 0, 200, 0, 70 };
+            DrawRectangle(0, (int)greenLineY, GetScreenWidth(),
+                GetScreenHeight() - (int)greenLineY, areaFill);
 
             DrawLineEx({ 0, greenLineY }, { (float)GetScreenWidth(), greenLineY }, 5.0f, GREEN);
 
