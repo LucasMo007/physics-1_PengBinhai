@@ -132,8 +132,10 @@ void PhysicsWorld::CollideAll() {
 }
 int main()
 {
+    static constexpr int InitialWidth = 1200;
+    static constexpr int InitialHeight = 800;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
-    InitWindow(800, 800, "Angry Bird: Rendering Launch Vector");
+    InitWindow(800, 800, "Angry Bird: Lab 4");
     SetTargetFPS(60);
 
 
