@@ -324,8 +324,9 @@ int main()
             DrawRectangleLines(10, 10, 500, 150, Fade(BLACK, 0.2f));
             char buf[512];
             std::snprintf(buf, sizeof(buf),
-                "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)\nGravity: mag=%.1f  ang=%.1f deg (0=right, 90=down)\nTime: %.2f s   Active: %s",
-                start.x, start.y, launchAngleDeg, launchSpeed, vx, vy, gravityMag, gravityAngleDeg, sim.time, bird.active ? "yes" : "no");
+                "launchPosition: (%.1f, %.1f)\nlaunchAngle: %.1f deg\nlaunchSpeed: %.1f\nv0 (y-up): (%.1f, %.1f)\nGravity: mag=%.1f  ang=%.1f deg (0=right, 90=down)\nTime: %.2f s   Active: %s\nTouchGreen: % s   HitTarget : % s\n",
+                start.x, start.y, launchAngleDeg, launchSpeed, vx, vy, gravityMag, gravityAngleDeg, sim.time, bird.active ? "yes" : "no",hitGreenOrBelow ? "YES" : "no",
+                hitTarget ? "YES" : "no" );
 
 
             DrawText(buf, 22, 18, 18, BLACK);
