@@ -353,7 +353,7 @@ int main()
 {
 
     InitWindow(800, 800, "Angry Bird: initial velocity vector (raylib)");
-
+    SetTargetFPS(60);
     //define a platform  with set size
     Rectangle platform;
     platform.x = 0.0f;
@@ -381,6 +381,8 @@ int main()
 
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
+
+        launchPosition.x +=  100.0f * dt;
 
         BeginDrawing();
 
