@@ -349,7 +349,8 @@
 #include "raymath.h"
 
 
-int main() {
+int main() 
+{
 
     InitWindow(800, 800, "Angry Bird: initial velocity vector (raylib)");
 
@@ -367,18 +368,30 @@ int main() {
     ground.width = 800.0f;
     ground.height = 20.0f;
 
+    //create a bird circle with set size 
+    float radius = 10.0f;
+    Vector2 launchPosition ={ 0.0f, 0.0f };
 
-    while (!WindowShouldClose()) {
+    launchPosition.x = platform.x + platform.width - radius;
+    //launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
+    launchPosition.y = platform.y - radius;//This is a right math formula
+
+    while (!WindowShouldClose()) 
+    {
 
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
 
         BeginDrawing();
+
         ClearBackground(WHITE);//white background 
 
         DrawRectangleRec(platform, GRAY);//draw platform 
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
+
+        DrawCircleV(launchPosition, radius, RED);
+
 
         EndDrawing();
     }
