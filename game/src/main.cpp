@@ -103,7 +103,7 @@ void PhysicsWorld::CollideAll() {
             }
         }
     }
-    // --- B) 球-半空间（半空间为 n·x >= offset 的一侧）---
+  
     for (int i = 0; i < n; ++i) {
         PhysicsBody* s = bodies[i];
         if (!s || s->shape != ShapeType::Sphere) continue;
@@ -115,10 +115,10 @@ void PhysicsWorld::CollideAll() {
 
             Vector2 nrm = h->normal;
             float len = Vector2Length(nrm);
-            if (len <= 0.0f) continue;                 // 避免无效法线
-            nrm = Vector2Scale(nrm, 1.0f / len);       // 归一化
+            if (len <= 0.0f) continue;                 
+            nrm = Vector2Scale(nrm, 1.0f / len);       
 
-            // 有符号距离：d = n·c - offset
+         
             float d = Vector2DotProduct(nrm, s->position) - h->offset;
 
            
@@ -145,7 +145,7 @@ int main()
     platform.y = 600.0f;
     platform.width = 100.0f;
     platform.height = 20.0f;
-
+    //draw green line
     const float gapBelowPlatform = 36.0f;
     float greenLineY = platform.y + platform.height + gapBelowPlatform;
 
@@ -212,7 +212,7 @@ int main()
         };
     while (!WindowShouldClose())
     {
-        float dt = GetFrameTime();//获取帧时间增量：获取上一帧到当前帧的时间间隔（秒），用于实现与帧率无关的平滑移动
+        float dt = GetFrameTime();
 
         if (IsKeyPressed(KEY_SPACE)) Launch();
 
