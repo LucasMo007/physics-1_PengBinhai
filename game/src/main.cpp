@@ -380,12 +380,10 @@ int main()
     float launchSpeed = 100.0f;
     float launchAngle = 0.0f;
 
-   
-    Vector2 LaunceVelocity = Vector2Rotate(Vector2UnitX, launchAngle)*launchSpeed ;
+    Vector2 Launchposition = birdPosition;
+    Vector2 LaunchVelocity = Vector2Rotate(Vector2UnitX, launchAngle)*launchSpeed ;
 
-    Vector2 birdVelocity = LaunceVelocity;
-
-  
+    Vector2 birdVelocity = LaunchVelocity;
     Vector2 birdAcceleration = { 0.0f, 9.81f };
 
     while (!WindowShouldClose()) 
@@ -407,6 +405,9 @@ int main()
 
         DrawCircleV(birdPosition, radius, RED);
 
+        DrawText(TextFormat("Launch Position: %f %f", Launchposition.x, Launchposition.y), 10, 10, 20, RED);
+        DrawText(TextFormat("Launch Angle: %f", launchAngle), 10, 40, 20, ORANGE);
+        DrawText(TextFormat("Launch Speed: %f", launchSpeed), 10, 70, 20, GOLD);
 
         EndDrawing();
     }
