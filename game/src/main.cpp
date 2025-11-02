@@ -370,12 +370,22 @@ int main()
 
     //create a bird circle with set size 
     float radius = 10.0f;
+   
+    
     Vector2 birdPosition ={ 0.0f, 0.0f };
     birdPosition.x = platform.x + platform.width - radius;
     //launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
     birdPosition.y = platform.y - radius;//This is a right math formula
 
-    Vector2 birdVelocity = { 100.0f, 0.0f };
+    float launchSpeed = 100.0f;
+    float launchAngle = 0.0f;
+
+   
+    Vector2 LaunceVelocity = Vector2Rotate(Vector2UnitX, launchAngle)*launchSpeed ;
+
+    Vector2 birdVelocity = LaunceVelocity;
+
+  
     Vector2 birdAcceleration = { 0.0f, 9.81f };
 
     while (!WindowShouldClose()) 
