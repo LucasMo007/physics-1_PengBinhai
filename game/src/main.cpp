@@ -392,6 +392,27 @@ int main()
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
 
+        if (IsKeyDown(KEY_ONE))
+        {
+            Launchposition.x += 100.0f * dt;
+        }
+
+        if (IsKeyDown(KEY_TWO))
+        {
+            Launchposition.x -= 100.0f * dt;
+        }
+
+        if (IsKeyDown(KEY_THREE))
+        {
+            Launchposition.y += 100.0f * dt;
+        }
+
+        if (IsKeyDown(KEY_FOUR))
+        {
+            Launchposition.y -= 100.0f * dt;
+        }
+
+
         birdVelocity += birdAcceleration * dt;
         birdPosition += birdVelocity * dt;
 
@@ -399,11 +420,15 @@ int main()
 
         ClearBackground(WHITE);//white background 
 
+        DrawCircleV(Launchposition, radius, ORANGE);
+
+        DrawCircleV(birdPosition, radius, RED);
+        
         DrawRectangleRec(platform, GRAY);//draw platform 
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
 
-        DrawCircleV(birdPosition, radius, RED);
+    
 
         DrawText(TextFormat("Launch Position: %f %f", Launchposition.x, Launchposition.y), 10, 10, 20, RED);
         DrawText(TextFormat("Launch Angle: %f", launchAngle), 10, 40, 20, ORANGE);
