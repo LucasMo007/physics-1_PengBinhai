@@ -370,11 +370,13 @@ int main()
 
     //create a bird circle with set size 
     float radius = 10.0f;
-    Vector2 launchPosition ={ 0.0f, 0.0f };
-
-    launchPosition.x = platform.x + platform.width - radius;
+    Vector2 birdPosition ={ 0.0f, 0.0f };
+    birdPosition.x = platform.x + platform.width - radius;
     //launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
-    launchPosition.y = platform.y - radius;//This is a right math formula
+    birdPosition.y = platform.y - radius;//This is a right math formula
+
+    Vector2 birdVelocity = { 100.0f, 0.0f };
+    Vector2 birdAcceleration = { 0.0f, 9.81f };
 
     while (!WindowShouldClose()) 
     {
@@ -382,7 +384,8 @@ int main()
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
 
-        launchPosition.x +=  100.0f * dt;
+        birdVelocity += birdAcceleration * dt;
+        birdPosition += birdVelocity * dt;
 
         BeginDrawing();
 
@@ -392,7 +395,7 @@ int main()
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
 
-        DrawCircleV(launchPosition, radius, RED);
+        DrawCircleV(birdPosition, radius, RED);
 
 
         EndDrawing();
