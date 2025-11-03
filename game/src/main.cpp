@@ -356,6 +356,13 @@ struct PhysicsBody
     float invMass = 1.0f;
 };
 
+// Physics Simulation
+struct PhysicsWorld
+{
+    Vector2 gravity = { 0.0f, 9.81f };
+    std::vector<PhysicsBody> entities;
+};
+
 int main() 
 {
 
