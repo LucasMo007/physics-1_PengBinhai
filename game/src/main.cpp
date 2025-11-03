@@ -361,6 +361,7 @@ struct PhysicsWorld
 {
     Vector2 gravity = { 0.0f, 9.81f };
     std::vector<PhysicsBody> entities;
+
 };
 
 int main() 
@@ -383,13 +384,11 @@ int main()
     ground.height = 20.0f;
 
     PhysicsWorld world;
-    //create a bird circle with set size 
+    //They are only used to initialize the launch parameters (game-logic variables).
   
     float birdRadius = 10.0f;
     float birdAngle = 0.0f;
     float birdSpeed = 100.0f;
-   
-    //birdPosition birdAcceleration and birdVelocity are struct PhysicsBody ,launchSpeed launchAngle launchPosition and launchVelocity are game logic values
     Vector2 launchVelocity = Vector2Zeros;
     Vector2 launchPosition = Vector2Zeros;
 
@@ -407,6 +406,7 @@ int main()
         if (IsKeyPressed(KEY_SPACE)) {
             PhysicsBody bird;
                 bird.position = launchPosition;
+                bird.velocity = launchVelocity;
                 world.entities.push_back(bird);
 
         }
@@ -421,12 +421,12 @@ int main()
             launchPosition.x -= 100.0f * dt;
         }
 
-        if (IsKeyDown(KEY_W))
+        if (IsKeyDown(KEY_S))
         {
             launchPosition.y += 100.0f * dt;
         }
 
-        if (IsKeyDown(KEY_S))
+        if (IsKeyDown(KEY_W))
         {
             launchPosition.y -= 100.0f * dt;
         }
@@ -434,7 +434,18 @@ int main()
         {
             birdAngle -= 90.0f * DEG2RAD * dt;
         }
-
+        if (IsKeyDown(KEY_E))
+        {
+            // Rotate counter-clockwise at 90 degrees per second
+            birdAngle += 90.0f * DEG2RAD * dt;
+        }
+        // Update all physics bodies
+        for (size_t i = 0; i < world.entities.size(); i++)
+        {
+            PhysicsBody& e = world.entities[i];
+            e.velocity += world.gravity * dt;   // v = a * t
+            e.position += e.velocity * dt;      // p = v * t
+        }
        
   
 
