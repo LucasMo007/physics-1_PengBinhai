@@ -393,6 +393,9 @@ int main()
 
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
+        if (IsKeyPressed(KEY_SPACE)) {
+
+        }
 
         if (IsKeyDown(KEY_ONE))
         {
@@ -436,9 +439,10 @@ int main()
 
         DrawLineEx(launchPosition, launchPosition + futureLaunchVelocity, 2.0f, GOLD);
 
-        DrawText(TextFormat("Launch Position: %f %f", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
+        DrawText(TextFormat("Launch Position: %f ", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
         DrawText(TextFormat("Launch Angle: %f", launchAngle), 10, 40, 20, ORANGE);
         DrawText(TextFormat("Launch Speed: %f", launchSpeed), 10, 70, 20, GOLD);
+        DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);
 
         EndDrawing();
     }
