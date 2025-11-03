@@ -347,7 +347,14 @@
 //    }
 #include "raylib.h"
 #include "raymath.h"
-
+#include <vector>
+struct PhysicsBody
+{
+    Vector2 position = Vector2Zeros;
+    Vector2 velocity = Vector2Zeros;
+    float drag = 1.0f;
+    float invMass = 1.0f;
+};
 
 int main() 
 {
