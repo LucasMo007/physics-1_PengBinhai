@@ -382,25 +382,22 @@ int main()
     ground.width = 800.0f;
     ground.height = 20.0f;
 
+    PhysicsWorld world;
     //create a bird circle with set size 
-    float radius = 10.0f;
+  
+    float birdRadius = 10.0f;
+    float birdAngle = 0.0f;
+    float birdSpeed = 100.0f;
    
     //birdPosition birdAcceleration and birdVelocity are struct PhysicsBody ,launchSpeed launchAngle launchPosition and launchVelocity are game logic values
-    Vector2 birdPosition ={ 0.0f, 0.0f };
-    birdPosition.x = platform.x + platform.width - radius;
+    Vector2 launchVelocity = Vector2Zeros;
+    Vector2 launchPosition = Vector2Zeros;
+
+    launchPosition.x = platform.x + platform.width - birdRadius;
     //launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
-    birdPosition.y = platform.y - radius;//This is a right math formula
-
-    Vector2 birdAcceleration = { 0.0f, 9.81f };
-    float launchSpeed = 100.0f;
-    float launchAngle = 0.0f;
-    Vector2 launchPosition = birdPosition;
-    Vector2 launchVelocity = Vector2Rotate(Vector2UnitX, launchAngle)*launchSpeed ;
-    Vector2 futureLaunchVelocity = launchVelocity;
-    Vector2 birdVelocity = launchVelocity;
-
-    
+    launchPosition.y = platform.y - birdRadius;//This is a right math formula
    
+  
 
     while(!WindowShouldClose())
     {
@@ -408,54 +405,56 @@ int main()
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
         if (IsKeyPressed(KEY_SPACE)) {
+            PhysicsBody bird;
+                bird.position = launchPosition;
+                world.entities.push_back(bird);
 
         }
 
-        if (IsKeyDown(KEY_ONE))
+        if (IsKeyDown(KEY_D))
         {
             launchPosition.x += 100.0f * dt;
         }
 
-        if (IsKeyDown(KEY_TWO))
+        if (IsKeyDown(KEY_A))
         {
             launchPosition.x -= 100.0f * dt;
         }
 
-        if (IsKeyDown(KEY_THREE))
+        if (IsKeyDown(KEY_W))
         {
             launchPosition.y += 100.0f * dt;
         }
 
-        if (IsKeyDown(KEY_FOUR))
+        if (IsKeyDown(KEY_S))
         {
             launchPosition.y -= 100.0f * dt;
         }
-        if (IsKeyDown(KEY_FIVE)) 
+        if (IsKeyDown(KEY_Q)) 
         {
-            launchAngle -= 90.0f * DEG2RAD * dt;
+            birdAngle -= 90.0f * DEG2RAD * dt;
         }
 
-        futureLaunchVelocity = Vector2Rotate(Vector2UnitX, launchAngle) * launchSpeed;
-        birdVelocity += birdAcceleration * dt;
-        birdPosition += birdVelocity * dt;
+       
+  
 
         BeginDrawing();
 
         ClearBackground(WHITE);//white background 
 
-        DrawCircleV(launchPosition, radius, ORANGE);
+        DrawCircleV(launchPosition, birdRadius, ORANGE);
 
-        DrawCircleV(birdPosition, radius, RED);
+        
         
         DrawRectangleRec(platform, GRAY);//draw platform 
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
 
-        DrawLineEx(launchPosition, launchPosition + futureLaunchVelocity, 2.0f, GOLD);
+        DrawLineEx(launchPosition, launchPosition + launchVelocity, 2.0f, GOLD);
 
         DrawText(TextFormat("Launch Position: %f ", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
-        DrawText(TextFormat("Launch Angle: %f", launchAngle), 10, 40, 20, ORANGE);
-        DrawText(TextFormat("Launch Speed: %f", launchSpeed), 10, 70, 20, GOLD);
+        DrawText(TextFormat("Launch Angle: %f", birdAngle), 10, 40, 20, ORANGE);
+        DrawText(TextFormat("Launch Speed: %f", birdSpeed), 10, 70, 20, GOLD);
         DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);
 
         EndDrawing();
