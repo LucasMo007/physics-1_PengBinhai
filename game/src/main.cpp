@@ -378,7 +378,7 @@ struct PhysicsWorld
 int main() 
 {
 
-    InitWindow(800, 800, "Angry Bird: Lab2");
+    InitWindow(800, 800, "Angry Bird: Lab3");
     SetTargetFPS(60);
     //define a platform  with set size
    /* Rectangle platform;
@@ -417,7 +417,7 @@ int main()
         
         float dt = GetFrameTime();// get time passed since last frame
        
-       
+        circle->position = GetMousePosition();
 
         BeginDrawing();
 
