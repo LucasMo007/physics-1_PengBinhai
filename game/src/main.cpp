@@ -439,6 +439,14 @@ int main()
             // Rotate counter-clockwise at 90 degrees per second
             birdAngle += 90.0f * DEG2RAD * dt;
         }
+        if (IsKeyDown(KEY_ONE))
+        {
+            birdSpeed -= 50.0 * dt;
+        }
+        if (IsKeyDown(KEY_TWO))
+        {
+            birdSpeed += 50.0 * dt;
+        }
         // Update all physics bodies,physics world logic ，I will put in physics world later 
         for (size_t i = 0; i < world.entities.size(); i++)
         {
