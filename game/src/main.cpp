@@ -359,7 +359,7 @@ struct PhysicsBody
 // Physics Simulation
 struct PhysicsWorld
 {
-    Vector2 gravity = { 0.0f, 9.81f };
+    Vector2 gravity = { 0.0f, 80.0f };
     std::vector<PhysicsBody> entities;
 
 };
@@ -439,11 +439,11 @@ int main()
             // Rotate counter-clockwise at 90 degrees per second
             birdAngle += 90.0f * DEG2RAD * dt;
         }
-        if (IsKeyDown(KEY_ONE))
+        if (IsKeyDown(KEY_UP))
         {
             birdSpeed -= 50.0 * dt;
         }
-        if (IsKeyDown(KEY_TWO))
+        if (IsKeyDown(KEY_DOWN ))
         {
             birdSpeed += 50.0 * dt;
         }
