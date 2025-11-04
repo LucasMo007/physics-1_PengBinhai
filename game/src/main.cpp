@@ -395,18 +395,18 @@ int main()
     PhysicsWorld world;
     //They are only used to initialize the launch parameters (game-logic variables).
   
-    float birdRadius = 10.0f;
-    float birdAngle = 0.0f;
-    float birdSpeed = 100.0f;
-    Vector2 launchVelocity = Vector2Zeros;
-    Vector2 launchPosition = Vector2Zeros;
+    //float birdRadius = 10.0f;
+    //float birdAngle = 0.0f;
+    //float birdSpeed = 100.0f;
+    //Vector2 launchVelocity = Vector2Zeros;
+    //Vector2 launchPosition = Vector2Zeros;
 
-    launchPosition.x = platform.x + platform.width - birdRadius;
-    //launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
-    launchPosition.y = platform.y - birdRadius;//This is a right math formula
+    //launchPosition.x = platform.x + platform.width - birdRadius;
+    ////launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
+    //launchPosition.y = platform.y - birdRadius;//This is a right math formula
    
-    float gravityAngleDeg = 90.0f;  
-    float gravityMag = 80.0f;
+    //float gravityAngleDeg = 90.0f;  
+    //float gravityMag = 80.0f;
   
 
     while(!WindowShouldClose())
@@ -490,19 +490,19 @@ int main()
         //if (IsKeyDown(KEY_L)) 
         //{ gravityAngleDeg += 90.0f * dt; }
 
-        float gRad = gravityAngleDeg * DEG2RAD;
-        world.gravity.x = gravityMag * cosf(gRad);
-        world.gravity.y = gravityMag * sinf(gRad);
+        //float gRad = gravityAngleDeg * DEG2RAD;
+        //world.gravity.x = gravityMag * cosf(gRad);
+        //world.gravity.y = gravityMag * sinf(gRad);
 
-        world.Step(dt);
-        // Update all physics bodies,physics world logic ，I will put in physics world later 
-        //for (size_t i = 0; i < world.entities.size(); i++)
-        //{
-        //    PhysicsBody& e = world.entities[i];
-        //    e.velocity += world.gravity * dt;   // v = a * t
-        //    e.position += e.velocity * dt;      // p = v * t
-        //}
-        launchVelocity = Vector2Rotate(Vector2UnitX, birdAngle) * birdSpeed;
+        //world.Step(dt);
+        //// Update all physics bodies,physics world logic ，I will put in physics world later 
+        ////for (size_t i = 0; i < world.entities.size(); i++)
+        ////{
+        ////    PhysicsBody& e = world.entities[i];
+        ////    e.velocity += world.gravity * dt;   // v = a * t
+        ////    e.position += e.velocity * dt;      // p = v * t
+        ////}
+        //launchVelocity = Vector2Rotate(Vector2UnitX, birdAngle) * birdSpeed;
   
 
         BeginDrawing();
@@ -519,13 +519,13 @@ int main()
             }
 
 
-            DrawCircleV(launchPosition, birdRadius, ORANGE);
+       /*     DrawCircleV(launchPosition, birdRadius, ORANGE);
         DrawLineEx(launchPosition, launchPosition + launchVelocity, 2.0f, GOLD);
         
         DrawText(TextFormat("Launch Position: %f %f", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
         DrawText(TextFormat("Launch Angle: %f", birdAngle), 10, 40, 20, ORANGE);
         DrawText(TextFormat("Launch Speed: %f", birdSpeed), 10, 70, 20, GOLD);
-        DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);
+        DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);*/
         Vector2 gStart{ 350, 40 };                           
         Vector2 gEnd = Vector2Add(gStart, Vector2Scale(world.gravity, 0.5f)); 
         DrawLineEx(gStart, gEnd, 4.0f, BLUE);
