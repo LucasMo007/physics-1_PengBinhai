@@ -439,28 +439,34 @@ int main()
             // Rotate counter-clockwise at 90 degrees per second
             birdAngle += 90.0f * DEG2RAD * dt;
         }
-        // Update all physics bodies
+        // Update all physics bodies,physics world logic ，I will put in physics world later 
         for (size_t i = 0; i < world.entities.size(); i++)
         {
             PhysicsBody& e = world.entities[i];
             e.velocity += world.gravity * dt;   // v = a * t
             e.position += e.velocity * dt;      // p = v * t
         }
-       
+        launchVelocity = Vector2Rotate(Vector2UnitX, birdAngle) * birdSpeed;
   
 
         BeginDrawing();
 
         ClearBackground(WHITE);//white background 
 
-        DrawCircleV(launchPosition, birdRadius, ORANGE);
 
         
         
         DrawRectangleRec(platform, GRAY);//draw platform 
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
+        // Draw all physics bodies
+            for (const PhysicsBody& e : world.entities)
+            {
+                DrawCircleV(e.position, birdRadius, RED);
+            }
 
+
+            DrawCircleV(launchPosition, birdRadius, ORANGE);
         DrawLineEx(launchPosition, launchPosition + launchVelocity, 2.0f, GOLD);
 
         DrawText(TextFormat("Launch Position: %f ", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
