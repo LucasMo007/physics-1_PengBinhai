@@ -354,6 +354,8 @@ struct PhysicsBody
     Vector2 velocity = Vector2Zeros;
     float drag = 1.0f;
     float Mass = 1.0f;
+    float gravityScale = 1.0f;
+    float radius = 0.0f;
 };
 
 // Physics Simulation
@@ -379,11 +381,11 @@ int main()
     InitWindow(800, 800, "Angry Bird: Lab2");
     SetTargetFPS(60);
     //define a platform  with set size
-    Rectangle platform;
+   /* Rectangle platform;
     platform.x = 0.0f;
     platform.y = 600.0f;
     platform.width = 100.0f;
-    platform.height = 20.0f;
+    platform.height = 20.0f;*/
 
     //create a ground rectangle across the bottom of the screen
     Rectangle ground;
@@ -392,21 +394,21 @@ int main()
     ground.width = 800.0f;
     ground.height = 20.0f;
 
-    PhysicsWorld world;
-    //They are only used to initialize the launch parameters (game-logic variables).
-  
-    //float birdRadius = 10.0f;
-    //float birdAngle = 0.0f;
-    //float birdSpeed = 100.0f;
-    //Vector2 launchVelocity = Vector2Zeros;
-    //Vector2 launchPosition = Vector2Zeros;
 
-    //launchPosition.x = platform.x + platform.width - birdRadius;
-    ////launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
-    //launchPosition.y = platform.y - birdRadius;//This is a right math formula
-   
-    //float gravityAngleDeg = 90.0f;  
-    //float gravityMag = 80.0f;
+    PhysicsWorld world;
+    world.entities.push_back({});
+
+    // Stationary circle
+    PhysicsBody* circle = &world.entities.back();
+    circle->position = { 400.0f, 400.0f };
+    circle->radius = 20.0f;
+    circle->gravityScale = 0.0f;
+
+    // Moving
+    world.entities.push_back({});
+    circle = &world.entities.back();
+    circle->radius = 20.0f;
+    circle->gravityScale = 0.0f;
   
 
     while(!WindowShouldClose())
@@ -415,107 +417,19 @@ int main()
         
         float dt = GetFrameTime();// get time passed since last frame
        
-        //if (IsKeyPressed(KEY_SPACE)) {
-        //    PhysicsBody bird;
-        //        bird.position = launchPosition;
-        //        bird.velocity = launchVelocity;
-        //        world.entities.push_back(bird);
-
-        //}
-
-        //if (IsKeyDown(KEY_D))
-        //{
-        //    launchPosition.x += 100.0f * dt;
-        //}
-
-        //if (IsKeyDown(KEY_A))
-        //{
-        //    launchPosition.x -= 100.0f * dt;
-        //}
-
-        //if (IsKeyDown(KEY_S))
-        //{
-        //    launchPosition.y += 100.0f * dt;
-        //}
-
-        //if (IsKeyDown(KEY_W))
-        //{
-        //    launchPosition.y -= 100.0f * dt;
-        //}
-        //if (IsKeyDown(KEY_Q)) 
-        //{
-        //    birdAngle -= 90.0f * DEG2RAD * dt;
-        //}
-        //if (IsKeyDown(KEY_E))
-        //{
-        //    // Rotate counter-clockwise at 90 degrees per second
-        //    birdAngle += 90.0f * DEG2RAD * dt;
-        //}
-        //if (IsKeyDown(KEY_UP))
-        //{
-        //    birdSpeed -= 50.0 * dt;
-        //}
-        //if (IsKeyDown(KEY_DOWN ))
-        //{
-        //    birdSpeed += 50.0 * dt;
-        //}
-        //if (IsKeyPressed(KEY_ONE))
-        //{
-        //    birdAngle = 0.0f * DEG2RAD;
-        //}
-
-        //if (IsKeyPressed(KEY_TWO))
-        //{
-        //    birdAngle = -45.0f * DEG2RAD;
-        //}
-
-        //if (IsKeyPressed(KEY_THREE))
-        //{
-        //    birdAngle = -60.0f * DEG2RAD;
-        //}
-
-        //if (IsKeyPressed(KEY_FOUR))
-        //{
-        //    birdAngle = -90.0f * DEG2RAD;
-        //}
-        //if (IsKeyDown(KEY_I)) 
-        //{ gravityMag += 200.0f * dt; }
-        //if (IsKeyDown(KEY_K)) 
-        //{ gravityMag -= 200.0f * dt; }
-        //if (gravityMag < 0.0f) 
-        //{ gravityMag = 0.0f; }
-
-        //if (IsKeyDown(KEY_J)) 
-        //{ gravityAngleDeg -= 90.0f * dt; }
-        //if (IsKeyDown(KEY_L)) 
-        //{ gravityAngleDeg += 90.0f * dt; }
-
-        //float gRad = gravityAngleDeg * DEG2RAD;
-        //world.gravity.x = gravityMag * cosf(gRad);
-        //world.gravity.y = gravityMag * sinf(gRad);
-
-        //world.Step(dt);
-        //// Update all physics bodies,physics world logic ，I will put in physics world later 
-        ////for (size_t i = 0; i < world.entities.size(); i++)
-        ////{
-        ////    PhysicsBody& e = world.entities[i];
-        ////    e.velocity += world.gravity * dt;   // v = a * t
-        ////    e.position += e.velocity * dt;      // p = v * t
-        ////}
-        //launchVelocity = Vector2Rotate(Vector2UnitX, birdAngle) * birdSpeed;
-  
+       
 
         BeginDrawing();
 
         ClearBackground(WHITE);//white background 
 
-        DrawRectangleRec(platform, GRAY);//draw platform 
+        //DrawRectangleRec(platform, GRAY);//draw platform 
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
         // Draw all physics bodies
             for (const PhysicsBody& e : world.entities)
             {
-                DrawCircleV(e.position, birdRadius, RED);
+                DrawCircleV(e.position, e.radius, RED);
             }
 
 
@@ -526,10 +440,10 @@ int main()
         DrawText(TextFormat("Launch Angle: %f", birdAngle), 10, 40, 20, ORANGE);
         DrawText(TextFormat("Launch Speed: %f", birdSpeed), 10, 70, 20, GOLD);
         DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);*/
-        Vector2 gStart{ 350, 40 };                           
+     /*   Vector2 gStart{ 350, 40 };                           
         Vector2 gEnd = Vector2Add(gStart, Vector2Scale(world.gravity, 0.5f)); 
         DrawLineEx(gStart, gEnd, 4.0f, BLUE);
-        DrawCircleV(gStart, 5.0f, DARKBLUE);
+        DrawCircleV(gStart, 5.0f, DARKBLUE);*/
         EndDrawing();
     }
 
