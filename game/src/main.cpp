@@ -353,14 +353,23 @@ struct PhysicsBody
     Vector2 position = Vector2Zeros;
     Vector2 velocity = Vector2Zeros;
     float drag = 1.0f;
-    float invMass = 1.0f;
+    float Mass = 1.0f;
 };
 
 // Physics Simulation
 struct PhysicsWorld
 {
+    float time = 0.0f; // get total time since the program started
     Vector2 gravity = { 0.0f, 80.0f };
     std::vector<PhysicsBody> entities;
+    void Step(float dt) {
+        time += dt;
+        for (int i = 0; i < entities.size(); i++) {
+            PhysicsBody& e = entities[i];
+            e.velocity += gravity * dt;   // v = v + a*dt
+            e.position += e.velocity * dt;// p = p + v*dt
+        }
+    }
 
 };
 
@@ -396,12 +405,14 @@ int main()
     //launchPosition.y = platform.y - (platform.height - radius);//This is a wrong math formula in class
     launchPosition.y = platform.y - birdRadius;//This is a right math formula
    
+    float gravityAngleDeg = 90.0f;  
+    float gravityMag = 80.0f;
   
 
     while(!WindowShouldClose())
     {
-
         float t = GetTime(); // get total time since the program started
+        
         float dt = GetFrameTime();// get time passed since last frame
        
         if (IsKeyPressed(KEY_SPACE)) {
@@ -467,13 +478,30 @@ int main()
         {
             birdAngle = -90.0f * DEG2RAD;
         }
+        if (IsKeyDown(KEY_I)) 
+        { gravityMag += 200.0f * dt; }
+        if (IsKeyDown(KEY_K)) 
+        { gravityMag -= 200.0f * dt; }
+        if (gravityMag < 0.0f) 
+        { gravityMag = 0.0f; }
+
+        if (IsKeyDown(KEY_J)) 
+        { gravityAngleDeg -= 90.0f * dt; }
+        if (IsKeyDown(KEY_L)) 
+        { gravityAngleDeg += 90.0f * dt; }
+
+        float gRad = gravityAngleDeg * DEG2RAD;
+        world.gravity.x = gravityMag * cosf(gRad);
+        world.gravity.y = gravityMag * sinf(gRad);
+
+        world.Step(dt);
         // Update all physics bodies,physics world logic ，I will put in physics world later 
-        for (size_t i = 0; i < world.entities.size(); i++)
-        {
-            PhysicsBody& e = world.entities[i];
-            e.velocity += world.gravity * dt;   // v = a * t
-            e.position += e.velocity * dt;      // p = v * t
-        }
+        //for (size_t i = 0; i < world.entities.size(); i++)
+        //{
+        //    PhysicsBody& e = world.entities[i];
+        //    e.velocity += world.gravity * dt;   // v = a * t
+        //    e.position += e.velocity * dt;      // p = v * t
+        //}
         launchVelocity = Vector2Rotate(Vector2UnitX, birdAngle) * birdSpeed;
   
 
@@ -493,12 +521,15 @@ int main()
 
             DrawCircleV(launchPosition, birdRadius, ORANGE);
         DrawLineEx(launchPosition, launchPosition + launchVelocity, 2.0f, GOLD);
-
-        DrawText(TextFormat("Launch Position: %f ", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
+        
+        DrawText(TextFormat("Launch Position: %f %f", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
         DrawText(TextFormat("Launch Angle: %f", birdAngle), 10, 40, 20, ORANGE);
         DrawText(TextFormat("Launch Speed: %f", birdSpeed), 10, 70, 20, GOLD);
         DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);
-
+        Vector2 gStart{ 350, 40 };                           
+        Vector2 gEnd = Vector2Add(gStart, Vector2Scale(world.gravity, 0.5f)); 
+        DrawLineEx(gStart, gEnd, 4.0f, BLUE);
+        DrawCircleV(gStart, 5.0f, DARKBLUE);
         EndDrawing();
     }
 
