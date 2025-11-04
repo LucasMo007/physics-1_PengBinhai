@@ -367,7 +367,7 @@ struct PhysicsWorld
 int main() 
 {
 
-    InitWindow(800, 800, "Angry Bird: initial velocity vector (raylib)");
+    InitWindow(800, 800, "Angry Bird: Lab2");
     SetTargetFPS(60);
     //define a platform  with set size
     Rectangle platform;
