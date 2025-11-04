@@ -415,80 +415,80 @@ int main()
         
         float dt = GetFrameTime();// get time passed since last frame
        
-        if (IsKeyPressed(KEY_SPACE)) {
-            PhysicsBody bird;
-                bird.position = launchPosition;
-                bird.velocity = launchVelocity;
-                world.entities.push_back(bird);
+        //if (IsKeyPressed(KEY_SPACE)) {
+        //    PhysicsBody bird;
+        //        bird.position = launchPosition;
+        //        bird.velocity = launchVelocity;
+        //        world.entities.push_back(bird);
 
-        }
+        //}
 
-        if (IsKeyDown(KEY_D))
-        {
-            launchPosition.x += 100.0f * dt;
-        }
+        //if (IsKeyDown(KEY_D))
+        //{
+        //    launchPosition.x += 100.0f * dt;
+        //}
 
-        if (IsKeyDown(KEY_A))
-        {
-            launchPosition.x -= 100.0f * dt;
-        }
+        //if (IsKeyDown(KEY_A))
+        //{
+        //    launchPosition.x -= 100.0f * dt;
+        //}
 
-        if (IsKeyDown(KEY_S))
-        {
-            launchPosition.y += 100.0f * dt;
-        }
+        //if (IsKeyDown(KEY_S))
+        //{
+        //    launchPosition.y += 100.0f * dt;
+        //}
 
-        if (IsKeyDown(KEY_W))
-        {
-            launchPosition.y -= 100.0f * dt;
-        }
-        if (IsKeyDown(KEY_Q)) 
-        {
-            birdAngle -= 90.0f * DEG2RAD * dt;
-        }
-        if (IsKeyDown(KEY_E))
-        {
-            // Rotate counter-clockwise at 90 degrees per second
-            birdAngle += 90.0f * DEG2RAD * dt;
-        }
-        if (IsKeyDown(KEY_UP))
-        {
-            birdSpeed -= 50.0 * dt;
-        }
-        if (IsKeyDown(KEY_DOWN ))
-        {
-            birdSpeed += 50.0 * dt;
-        }
-        if (IsKeyPressed(KEY_ONE))
-        {
-            birdAngle = 0.0f * DEG2RAD;
-        }
+        //if (IsKeyDown(KEY_W))
+        //{
+        //    launchPosition.y -= 100.0f * dt;
+        //}
+        //if (IsKeyDown(KEY_Q)) 
+        //{
+        //    birdAngle -= 90.0f * DEG2RAD * dt;
+        //}
+        //if (IsKeyDown(KEY_E))
+        //{
+        //    // Rotate counter-clockwise at 90 degrees per second
+        //    birdAngle += 90.0f * DEG2RAD * dt;
+        //}
+        //if (IsKeyDown(KEY_UP))
+        //{
+        //    birdSpeed -= 50.0 * dt;
+        //}
+        //if (IsKeyDown(KEY_DOWN ))
+        //{
+        //    birdSpeed += 50.0 * dt;
+        //}
+        //if (IsKeyPressed(KEY_ONE))
+        //{
+        //    birdAngle = 0.0f * DEG2RAD;
+        //}
 
-        if (IsKeyPressed(KEY_TWO))
-        {
-            birdAngle = -45.0f * DEG2RAD;
-        }
+        //if (IsKeyPressed(KEY_TWO))
+        //{
+        //    birdAngle = -45.0f * DEG2RAD;
+        //}
 
-        if (IsKeyPressed(KEY_THREE))
-        {
-            birdAngle = -60.0f * DEG2RAD;
-        }
+        //if (IsKeyPressed(KEY_THREE))
+        //{
+        //    birdAngle = -60.0f * DEG2RAD;
+        //}
 
-        if (IsKeyPressed(KEY_FOUR))
-        {
-            birdAngle = -90.0f * DEG2RAD;
-        }
-        if (IsKeyDown(KEY_I)) 
-        { gravityMag += 200.0f * dt; }
-        if (IsKeyDown(KEY_K)) 
-        { gravityMag -= 200.0f * dt; }
-        if (gravityMag < 0.0f) 
-        { gravityMag = 0.0f; }
+        //if (IsKeyPressed(KEY_FOUR))
+        //{
+        //    birdAngle = -90.0f * DEG2RAD;
+        //}
+        //if (IsKeyDown(KEY_I)) 
+        //{ gravityMag += 200.0f * dt; }
+        //if (IsKeyDown(KEY_K)) 
+        //{ gravityMag -= 200.0f * dt; }
+        //if (gravityMag < 0.0f) 
+        //{ gravityMag = 0.0f; }
 
-        if (IsKeyDown(KEY_J)) 
-        { gravityAngleDeg -= 90.0f * dt; }
-        if (IsKeyDown(KEY_L)) 
-        { gravityAngleDeg += 90.0f * dt; }
+        //if (IsKeyDown(KEY_J)) 
+        //{ gravityAngleDeg -= 90.0f * dt; }
+        //if (IsKeyDown(KEY_L)) 
+        //{ gravityAngleDeg += 90.0f * dt; }
 
         float gRad = gravityAngleDeg * DEG2RAD;
         world.gravity.x = gravityMag * cosf(gRad);
