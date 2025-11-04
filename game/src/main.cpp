@@ -403,6 +403,7 @@ int main()
 
         float t = GetTime(); // get total time since the program started
         float dt = GetFrameTime();// get time passed since last frame
+       
         if (IsKeyPressed(KEY_SPACE)) {
             PhysicsBody bird;
                 bird.position = launchPosition;
@@ -447,6 +448,25 @@ int main()
         {
             birdSpeed += 50.0 * dt;
         }
+        if (IsKeyPressed(KEY_ONE))
+        {
+            birdAngle = 0.0f * DEG2RAD;
+        }
+
+        if (IsKeyPressed(KEY_TWO))
+        {
+            birdAngle = -45.0f * DEG2RAD;
+        }
+
+        if (IsKeyPressed(KEY_THREE))
+        {
+            birdAngle = -60.0f * DEG2RAD;
+        }
+
+        if (IsKeyPressed(KEY_FOUR))
+        {
+            birdAngle = -90.0f * DEG2RAD;
+        }
         // Update all physics bodies,physics world logic ，I will put in physics world later 
         for (size_t i = 0; i < world.entities.size(); i++)
         {
@@ -461,9 +481,6 @@ int main()
 
         ClearBackground(WHITE);//white background 
 
-
-        
-        
         DrawRectangleRec(platform, GRAY);//draw platform 
 
         DrawRectangleRec(ground, DARKGRAY);//draw ground 
