@@ -353,8 +353,11 @@ struct PhysicsBody
     Vector2 position = Vector2Zeros;
     Vector2 velocity = Vector2Zeros;
     float drag = 1.0f;
-    float Mass = 1.0f;
+    float invMass = 1.0f;
     float gravityScale = 1.0f;
+
+    bool collision = false;
+
     float radius = 0.0f;
 };
 
@@ -374,27 +377,18 @@ struct PhysicsWorld
     }
 
 };
+bool CircleCircle(Vector2 pos1, float rad1, Vector2 pos2, float rad2)
+{
+    // Circle should turn red when overlapping once this function is implemented correctly.
+    return false;
+}
 
 int main() 
 {
 
     InitWindow(800, 800, "Angry Bird: Lab3");
     SetTargetFPS(60);
-    //define a platform  with set size
-   /* Rectangle platform;
-    platform.x = 0.0f;
-    platform.y = 600.0f;
-    platform.width = 100.0f;
-    platform.height = 20.0f;*/
-
-    //create a ground rectangle across the bottom of the screen
-    Rectangle ground;
-    ground.x = 0.0f;
-    ground.y = 780.0f;
-    ground.width = 800.0f;
-    ground.height = 20.0f;
-
-
+ 
     PhysicsWorld world;
     world.entities.push_back({});
 
@@ -419,13 +413,28 @@ int main()
        
         circle->position = GetMousePosition();
 
+        for (size_t i = 0; i < world.entities.size(); i++)
+        {
+            PhysicsBody& e = world.entities[i];
+            e.velocity += world.gravity * dt;   // v = a * t
+            e.position += e.velocity * dt;      // p = v * t
+            for (size_t j = i + 1; j < world.entities.size(); j++)
+            {
+                PhysicsBody& a = world.entities[i];
+                PhysicsBody& b = world.entities[j];
+                bool collision = CircleCircle(a.position, a.radius, b.position, b.radius);
+                a.collision |= collision;
+                b.collision |= collision;
+            }
+        }
+
         BeginDrawing();
 
         ClearBackground(WHITE);//white background 
 
         //DrawRectangleRec(platform, GRAY);//draw platform 
 
-        DrawRectangleRec(ground, DARKGRAY);//draw ground 
+        //DrawRectangleRec(ground, DARKGRAY);//draw ground 
         // Draw all physics bodies
             for (const PhysicsBody& e : world.entities)
             {
