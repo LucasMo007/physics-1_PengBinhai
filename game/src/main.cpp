@@ -367,20 +367,16 @@ struct PhysicsWorld
     float time = 0.0f; // get total time since the program started
     Vector2 gravity = { 0.0f, 80.0f };
     std::vector<PhysicsBody> entities;
-    void Step(float dt) {
-        time += dt;
-        for (int i = 0; i < entities.size(); i++) {
-            PhysicsBody& e = entities[i];
-            e.velocity += gravity * dt;   // v = v + a*dt
-            e.position += e.velocity * dt;// p = p + v*dt
-        }
-    }
 
 };
 bool CircleCircle(Vector2 pos1, float rad1, Vector2 pos2, float rad2)
 {
     // Circle should turn red when overlapping once this function is implemented correctly.
-    return false;
+
+    float sumR = rad1 + rad2 ;
+    float dist = Vector2Distance(pos1, pos2);
+                       
+    return dist < sumR;
 }
 
 int main() 
@@ -390,6 +386,7 @@ int main()
     SetTargetFPS(60);
  
     PhysicsWorld world;
+
     world.entities.push_back({});
 
     // Stationary circle
@@ -416,15 +413,24 @@ int main()
         for (size_t i = 0; i < world.entities.size(); i++)
         {
             PhysicsBody& e = world.entities[i];
-            e.velocity += world.gravity * dt;   // v = a * t
+            Vector2 acc = world.gravity * e.gravityScale;
+            e.velocity += acc * dt;             // v = a * t
             e.position += e.velocity * dt;      // p = v * t
+            e.collision = false;
+        }
+
+        //Collision loop (test all objects against all other objects 
+
+        for (size_t i = 0; i < world.entities.size(); i++)
+        {
+           
             for (size_t j = i + 1; j < world.entities.size(); j++)
             {
                 PhysicsBody& a = world.entities[i];
                 PhysicsBody& b = world.entities[j];
                 bool collision = CircleCircle(a.position, a.radius, b.position, b.radius);
-                a.collision |= collision;
-                b.collision |= collision;
+                a.collision |= collision;//if collision is true ,a is true,if collision is false,a is keep original state .
+                b.collision |= collision;// only two side are false ,b is false ,one side is true ,b is true.so it can be true when collision with different objects 
             }
         }
 
@@ -432,27 +438,12 @@ int main()
 
         ClearBackground(WHITE);//white background 
 
-        //DrawRectangleRec(platform, GRAY);//draw platform 
-
-        //DrawRectangleRec(ground, DARKGRAY);//draw ground 
-        // Draw all physics bodies
-            for (const PhysicsBody& e : world.entities)
-            {
-                DrawCircleV(e.position, e.radius, RED);
-            }
-
-
-       /*     DrawCircleV(launchPosition, birdRadius, ORANGE);
-        DrawLineEx(launchPosition, launchPosition + launchVelocity, 2.0f, GOLD);
+        for (const PhysicsBody& e : world.entities)
+        {
+           
+            DrawCircleV(e.position, e.radius, e.collision ? RED : GREEN);
+        }
         
-        DrawText(TextFormat("Launch Position: %f %f", launchPosition.x, launchPosition.y), 10, 10, 20, RED);
-        DrawText(TextFormat("Launch Angle: %f", birdAngle), 10, 40, 20, ORANGE);
-        DrawText(TextFormat("Launch Speed: %f", birdSpeed), 10, 70, 20, GOLD);
-        DrawText(TextFormat("Total Time: %f ", t), 500, 10, 20, BLUE);*/
-     /*   Vector2 gStart{ 350, 40 };                           
-        Vector2 gEnd = Vector2Add(gStart, Vector2Scale(world.gravity, 0.5f)); 
-        DrawLineEx(gStart, gEnd, 4.0f, BLUE);
-        DrawCircleV(gStart, 5.0f, DARKBLUE);*/
         EndDrawing();
     }
 
