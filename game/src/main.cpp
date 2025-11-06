@@ -165,8 +165,12 @@ bool CircleCircle(Vector2 pos1, float rad1, Vector2 pos2, float rad2)
 bool CircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_space, Vector2 normal)
 {
     // 1) Determine vector FROM half-space TO circle (AB = B - A)
+       Vector2 to_circle = pos_circle - pos_half_space;
     // 2) Determine the distance from circle to half-space by scalar-projecting AB onto normal
+        float proj = Vector2DotProduct(to_circle, normal);
     // 3) Collision if distance is less than or equal to the radius of the circle
+        bool collision = proj <= rad;
+        return collision;
     return false;
 }
 
