@@ -155,7 +155,10 @@ struct PhysicsWorld
 // LE3 TODO -- Complete this function!
 bool CircleCircle(Vector2 pos1, float rad1, Vector2 pos2, float rad2)
 {
-    return false;
+    float sunRadii = rad1 + rad2;
+    float distance = Vector2Distance(pos1, pos2);
+    bool collision =distance <= sunRadii;
+    return collision  ;
 }
 
 // LE4 TODO -- Complete this function!
