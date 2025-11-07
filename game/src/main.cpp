@@ -178,38 +178,47 @@ void DrawProjCircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_spa
 int main()
 {
     PhysicsWorld world;
-    PhysicsBody* entity = nullptr;
+    {
+        PhysicsBody* entity = nullptr;
 
-    // Static circle
-    world.entities.push_back({});
-    entity = &world.entities.back();
-    entity->position = { 400.0f, 400.0f };
-    entity->gravity_scale = 0.0f;
-    entity->collider_type = COLLIDER_TYPE_CIRCLE;
-    entity->collider.circle.radius = 20.0f;
+        // Static circle
+        world.entities.push_back({});
+        entity = &world.entities.back();
+        entity->position = { 400.0f, 400.0f };
+        entity->gravity_scale = 1.0f;
+        entity->collider_type = COLLIDER_TYPE_CIRCLE;
+        entity->collider.circle.radius = 20.0f;
 
-    // Static half-space
-    world.entities.push_back({});
-    entity = &world.entities.back();
-    entity->position = { 400.0f, 600.0f };
-    entity->gravity_scale = 0.0f;
-    entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
-    entity->collider.half_space.normal = Vector2UnitY * -1.0f;
+        world.entities.push_back({});
+        entity = &world.entities.back();
+        entity->position = { 400.0f, 500.0f };
+        entity->gravity_scale = 0.0f;
+        entity->collider_type = COLLIDER_TYPE_CIRCLE;
+        entity->collider.circle.radius = 20.0f;
+
+        // Static half-space
+        world.entities.push_back({});
+        entity = &world.entities.back();
+        entity->position = { 400.0f, 600.0f };
+        entity->gravity_scale = 0.0f;
+        entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
+        entity->collider.half_space.normal = Vector2UnitY * -1.0f;
+    }
    /* entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);*/
     // Simply rotate the normal if you'd like it to change directions!
 
     // Dynamic circle
-    world.entities.push_back({});
+ /*   world.entities.push_back({});
     entity = &world.entities.back();
     entity->collider_type = COLLIDER_TYPE_CIRCLE;
-    entity->collider.circle.radius = 20.0f;
+    entity->collider.circle.radius = 20.0f;*/
 
     InitWindow(800, 800, "Physics-1");
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();
-        entity->position = GetMousePosition();
+       
 
         // Motion loop
         for (size_t i = 0; i < world.entities.size(); i++)
