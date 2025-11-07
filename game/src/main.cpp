@@ -173,6 +173,7 @@ bool CircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_space, Vect
         return collision;
     return false;
 }
+void DrawProjCircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_space, Vector2 normal);
 
 int main()
 {
@@ -194,7 +195,7 @@ int main()
     entity->gravity_scale = 0.0f;
     entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
     entity->collider.half_space.normal = Vector2UnitY * -1.0f;
-    //entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);
+   /* entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);*/
     // Simply rotate the normal if you'd like it to change directions!
 
     // Dynamic circle
@@ -286,21 +287,24 @@ int main()
         }
 
         // Hard-coded visuals for LE4:
-        Vector2 circle_pos = world.entities[2].position;
-        Vector2 half_space_pos = world.entities[1].position;
-        Vector2 normal = world.entities[1].collider.half_space.normal;
+       
+        //Remove hard coded test to free us of our entity order constraint.
+       /* DrawProjCircleHalfSpace(world.entities[2].position, world.entities[2].collider.circle.radius, 
+            world.entities[1].position, world.entities[1].collider.half_space.normal);*/
 
-        // AB = B - A
-        Vector2 to_circle = circle_pos - half_space_pos;
-        float proj = Vector2DotProduct(to_circle, normal);
-        DrawLineEx(half_space_pos, half_space_pos + to_circle, 5.0f, MAGENTA);
-        DrawCircleV(half_space_pos + normal * proj, 10.0f, PINK);
-        DrawLineEx(half_space_pos, half_space_pos + normal * proj, 4.0f, PINK);
-        // if proj is less than the radius of the circle, there's collision!
+       
 
         EndDrawing();
     }
 
     CloseWindow();
     return 0;
+}
+void DrawProjCircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_space, Vector2 normal)
+{
+    Vector2 to_circle = pos_circle - pos_half_space;
+    float proj = Vector2DotProduct(to_circle, normal);
+    DrawLineEx(pos_half_space, pos_half_space + to_circle, 5.0f, MAGENTA);
+    DrawCircleV(pos_half_space + normal * proj, rad, PINK);
+    DrawLineEx(pos_half_space, pos_half_space + normal * proj, 4.0f, PINK);
 }
