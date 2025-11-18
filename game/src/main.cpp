@@ -1,5 +1,4 @@
 ﻿
-
 #include "raylib.h"
 #include "raymath.h"
 #include <vector>
@@ -63,7 +62,6 @@ struct PhysicsWorld
     Vector2 gravity = { 0.0f, 9.81f };
     std::vector<PhysicsBody> entities;
 };
-
 // LE3 TODO -- Complete this function!
 bool CircleCircle(Vector2 pos1, float rad1, Vector2 pos2, float rad2, Vector2* mtv = nullptr)
 {
@@ -82,11 +80,9 @@ bool CircleCircle(Vector2 pos1, float rad1, Vector2 pos2, float rad2, Vector2* m
 
     return collision  ;
 }
-
 // LE4 TODO -- Complete this function!
 bool CircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_space, Vector2 normal, Vector2* mtv = nullptr)
 {
- 
        Vector2 to_circle = pos_circle - pos_half_space;
    
         float proj = Vector2DotProduct(to_circle, normal);
@@ -102,13 +98,13 @@ bool CircleHalfSpace(Vector2 pos_circle, float rad, Vector2 pos_half_space, Vect
             *mtv = dir* mag;
             /* <-- remove this, just a test to see that the mtv is applied!*/
         }
-
         return collision;
- 
 }
 void UpdateMotion(PhysicsWorld& world);
 std::vector<HitPair> DetectCollisions(PhysicsWorld& world);
-void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions);
+//void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions);
+void ValidateResolutionVectors(std::vector<HitPair>& collisions);
+void ResolveCollisions(std::vector<HitPair> collisions);
 
 void Update(PhysicsWorld& world);
 void Draw(const PhysicsWorld& world);
@@ -145,7 +141,17 @@ int main()
         entity->collider.circle.radius = 20.0f;
         entity->inv_mass = 1.0f / 100.0f;
         entity->net_force += test_force;
+        // Static half-space
+        world.entities.push_back({});
+        entity = &world.entities.back();
+        entity->position = { 400.0f, 600.0f };
+        entity->gravity_scale = 0.0f;
+        entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
+        //entity->collider.half_space.normal = Vector2UnitY * -1.0f;
+        entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);
+        entity->inv_mass = 0.0f;
 
+        // Static circle
         world.entities.push_back({});
         entity = &world.entities.back();
         entity->position = { 400.0f, 500.0f };
@@ -154,15 +160,23 @@ int main()
         entity->collider.circle.radius = 20.0f;
         entity->inv_mass = 0.0f;
 
-        // Static half-space
-        world.entities.push_back({});
-        entity = &world.entities.back();
-        entity->position = { 400.0f, 600.0f };
-        entity->gravity_scale = 0.0f;
-        entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
-   /*     entity->collider.half_space.normal = Vector2UnitY * -1.0f;*/
-         entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);
-         entity->inv_mass = 0.0f;
+   //     world.entities.push_back({});
+   //     entity = &world.entities.back();
+   //     entity->position = { 400.0f, 500.0f };
+   //     entity->gravity_scale = 0.0f;
+   //     entity->collider_type = COLLIDER_TYPE_CIRCLE;
+   //     entity->collider.circle.radius = 20.0f;
+   //     entity->inv_mass = 0.0f;
+
+   //     // Static half-space
+   //     world.entities.push_back({});
+   //     entity = &world.entities.back();
+   //     entity->position = { 400.0f, 600.0f };
+   //     entity->gravity_scale = 0.0f;
+   //     entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
+   ///*     entity->collider.half_space.normal = Vector2UnitY * -1.0f;*/
+   //      entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);
+   //      entity->inv_mass = 0.0f;
     }
   
     // Ensure all half-space's have infinite mass (good habit to validate your entities after creation but before physics-loop)
@@ -374,16 +388,20 @@ std::vector<HitPair> DetectCollisions(PhysicsWorld& world)
 
     return collisions;
 }
-
-void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions)
+ 
+//void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions)
+void ValidateResolutionVectors(std::vector<HitPair>& collisions)
 {
-    for (HitPair collision : collisions)
+  /*  for (HitPair collision : collisions)*/
+    for (HitPair& collision : collisions)
     {
         PhysicsBody* a = collision.a;
         PhysicsBody* b = collision.b;
-        Vector2 mtv = collision.mtv;
+       /* Vector2 mtv = collision.mtv;*/
+        Vector2& mtv = collision.mtv;
 
         // Ensure at least one entity can move (otherwise we shouldn't be resolving collision)
+      /*  assert(!(IsMassInfinite(*a) && IsMassInfinite(*b)));*/
         assert(!(IsMassInfinite(*a) && IsMassInfinite(*b)));
 
         // Ensure entity A is *ALWAYS* dynamic, and entity B is either static or dynamic
@@ -403,7 +421,7 @@ void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions)
             mtv *= -1.0f;
         }
 
-        if (IsMassInfinite(*b))
+        /*if (IsMassInfinite(*b))
         {
             a->position += mtv;
         }
@@ -411,15 +429,37 @@ void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions)
         {
             a->position += mtv * 0.5f;
             b->position -= mtv * 0.5f;
+        }*/
+    }
+}
+void ResolveCollisions(std::vector<HitPair> collisions)
+{
+    for (HitPair collision : collisions)
+    {
+        PhysicsBody& a = *collision.a;
+        PhysicsBody& b = *collision.b;
+        Vector2 mtv = collision.mtv;
+
+        if (IsMassInfinite(b))
+        {
+            a.position += mtv;
+        }
+        else
+        {
+            a.position += mtv * 0.5f;
+            b.position -= mtv * 0.5f;
         }
     }
 }
-
 void Update(PhysicsWorld& world)
 {
+  /*  UpdateMotion(world);
+    std::vector<HitPair> collisions = DetectCollisions(world);
+    ResolveCollisions(world, collisions);*/
     UpdateMotion(world);
     std::vector<HitPair> collisions = DetectCollisions(world);
-    ResolveCollisions(world, collisions);
+    ValidateResolutionVectors(collisions);
+    ResolveCollisions(collisions);
 }
 
 void Draw(const PhysicsWorld& world)
