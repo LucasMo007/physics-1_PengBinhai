@@ -117,7 +117,7 @@ bool IsMassInfinite(const PhysicsBody & entity)
 
 
 int main()
-{
+{    // Lab Exercise 6 TODO -- Set up entities based on lab document
     PhysicsWorld world;
     {
         PhysicsBody* entity = nullptr;
@@ -160,23 +160,7 @@ int main()
         entity->collider.circle.radius = 20.0f;
         entity->inv_mass = 0.0f;
 
-   //     world.entities.push_back({});
-   //     entity = &world.entities.back();
-   //     entity->position = { 400.0f, 500.0f };
-   //     entity->gravity_scale = 0.0f;
-   //     entity->collider_type = COLLIDER_TYPE_CIRCLE;
-   //     entity->collider.circle.radius = 20.0f;
-   //     entity->inv_mass = 0.0f;
-
-   //     // Static half-space
-   //     world.entities.push_back({});
-   //     entity = &world.entities.back();
-   //     entity->position = { 400.0f, 600.0f };
-   //     entity->gravity_scale = 0.0f;
-   //     entity->collider_type = COLLIDER_TYPE_HALF_SPACE;
-   ///*     entity->collider.half_space.normal = Vector2UnitY * -1.0f;*/
-   //      entity->collider.half_space.normal = Vector2Rotate(Vector2UnitX, -45.0f * DEG2RAD);
-   //      entity->inv_mass = 0.0f;
+   
     }
   
     // Ensure all half-space's have infinite mass (good habit to validate your entities after creation but before physics-loop)
@@ -265,29 +249,39 @@ int main()
         BeginDrawing();
         ClearBackground(WHITE);
         Draw(world);
-        //for (const PhysicsBody& e : world.entities)
-        //{
-        //    Color color = e.collision ? RED : GREEN;
-        //    if (e.collider_type == COLLIDER_TYPE_CIRCLE)
-        //    {
-        //        DrawCircleV(e.position, e.collider.circle.radius, color);
-        //    }
-        //    else if (e.collider_type == COLLIDER_TYPE_HALF_SPACE)
-        //    {
-        //        // "Flip" the normal to determine the direction of the half-space
-        //        Vector2 direction = { -e.collider.half_space.normal.y, e.collider.half_space.normal.x };
-        //        Vector2 p0 = e.position + direction * 1000.0f;
-        //        Vector2 p1 = e.position - direction * 1000.0f;
-        //        DrawLineEx(p0, p1, 5.0f, color);
-        //        DrawLineEx(e.position, e.position + e.collider.half_space.normal * 50.0f, 5.0f, GOLD);
-        //    }
-        //}
 
-        // Hard-coded visuals for LE4:
-       
-        //Remove hard coded test to free us of our entity order constraint.
-       /* DrawProjCircleHalfSpace(world.entities[2].position, world.entities[2].collider.circle.radius, 
-            world.entities[1].position, world.entities[1].collider.half_space.normal);*/
+        std::vector<HitPair> collisions = DetectCollisions(world);
+        ValidateResolutionVectors(collisions);
+        for (HitPair collision : collisions)
+        {
+            PhysicsBody& a = *collision.a;
+            PhysicsBody& b = *collision.b;
+
+            if (a.collider_type == COLLIDER_TYPE_CIRCLE && b.collider_type == COLLIDER_TYPE_HALF_SPACE)
+            {
+                // Stop circle once it touches the half-space so we can visualize forces
+                a.gravity_scale = 0.0f;
+                a.velocity = Vector2Zeros;
+
+                // Lab Exercise 6 TODO -- correct the friction direction by doing the following:
+                // Read pages 386-392 of the Game Physics Cookbook (by Gabor Szauer)
+                // It explains how to properly calculate the friction direction.
+                // Use the textbook's formula to correct force_normal and force_friction
+
+                float magnitude = world.gravity.y / a.inv_mass;
+                Vector2 force_gravity = world.gravity * magnitude;
+                Vector2 force_normal = b.collider.half_space.normal * magnitude;
+
+                // This friction force "just happens" to be in the right direction.
+                // The textbook's formula is much more involved than this!
+                Vector2 force_friction = { force_normal.y, -force_normal.x };
+                force_friction *= a.friction_coeff;
+
+                DrawLineEx(a.position, a.position + force_gravity, 4.0f, PURPLE);
+                DrawLineEx(a.position, a.position + force_normal, 4.0f, GREEN);
+                DrawLineEx(a.position, a.position + force_friction, 4.0f, YELLOW);
+            }
+        }
 
        
 
@@ -389,19 +383,19 @@ std::vector<HitPair> DetectCollisions(PhysicsWorld& world)
     return collisions;
 }
  
-//void ResolveCollisions(PhysicsWorld& world, std::vector<HitPair> collisions)
+
 void ValidateResolutionVectors(std::vector<HitPair>& collisions)
 {
-  /*  for (HitPair collision : collisions)*/
+
     for (HitPair& collision : collisions)
     {
-        PhysicsBody* a = collision.a;
-        PhysicsBody* b = collision.b;
-       /* Vector2 mtv = collision.mtv;*/
+        /*PhysicsBody* a = collision.a;
+        PhysicsBody* b = collision.b;*/
+        PhysicsBody*& a = collision.a;
+        PhysicsBody*& b = collision.b;
         Vector2& mtv = collision.mtv;
 
         // Ensure at least one entity can move (otherwise we shouldn't be resolving collision)
-      /*  assert(!(IsMassInfinite(*a) && IsMassInfinite(*b)));*/
         assert(!(IsMassInfinite(*a) && IsMassInfinite(*b)));
 
         // Ensure entity A is *ALWAYS* dynamic, and entity B is either static or dynamic
@@ -421,15 +415,7 @@ void ValidateResolutionVectors(std::vector<HitPair>& collisions)
             mtv *= -1.0f;
         }
 
-        /*if (IsMassInfinite(*b))
-        {
-            a->position += mtv;
-        }
-        else
-        {
-            a->position += mtv * 0.5f;
-            b->position -= mtv * 0.5f;
-        }*/
+       
     }
 }
 void ResolveCollisions(std::vector<HitPair> collisions)
@@ -453,9 +439,7 @@ void ResolveCollisions(std::vector<HitPair> collisions)
 }
 void Update(PhysicsWorld& world)
 {
-  /*  UpdateMotion(world);
-    std::vector<HitPair> collisions = DetectCollisions(world);
-    ResolveCollisions(world, collisions);*/
+ 
     UpdateMotion(world);
     std::vector<HitPair> collisions = DetectCollisions(world);
     ValidateResolutionVectors(collisions);
